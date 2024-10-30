@@ -71,38 +71,25 @@ async function editarVenta(id, data) {
     const venta = await ventaRef.get();
 
     if (!venta.exists) {
-        return false; // La venta no se encontró, no se puede editar
+        return false; 
     }
-
-    // Obtener los datos actuales de la venta para preservar `fechaYHora` y `status`
     const ventaData = venta.data();
-
-    // Crear una instancia de Venta con los datos existentes y solo los campos editables
     const ventaEditada = new Venta({
         id,
         idProducto: data.idProducto || ventaData.idProducto,
-        idUsuario: data.idUsuario || ventaData.idUsuario,
-        fechaYHora: ventaData.fechaYHora, // Preserva la fecha original
-        status: ventaData.status          // Preserva el estado original
+        idUsuario: data.idUsuario || ventaData.idUsuario
     });
 
     if (!validarDatos(ventaEditada.getVenta)) {
-        return false; // Datos no válidos, no se actualiza la venta
+        return false; 
     }
-
-    // Actualizar solo `idProducto` y `idUsuario`
     await ventaRef.update({
         idProducto: ventaEditada.idProducto,
         idUsuario: ventaEditada.idUsuario
     });
 
-    return true; // Venta actualizada exitosamente
+    return true;
 }
-
-
-
-
-
 module.exports = {
     editarVenta,
     mostrarVentas,
