@@ -48,7 +48,6 @@ const {salt,hash}=encriptarPassword(data.password);
     data.salt=salt;
     data.tipoUsuario="usuario";
     const usuario1=new Usuario(data);
-    //console.log(usuario1.getUsuario); //saber si llega la informacion
     var usuarioValido=false;
     if(validarDatos(usuario1.getUsuario)){
         await usuariosBD.doc().set(usuario1.getUsuario);
@@ -68,31 +67,23 @@ async function borrarUsuario(id) {
 }
 
 async function editarUsuarios(id, nuevosDatos) {
-    // Obtiene el usuario actual a través de su ID
     const usuarioExistente = await buscarPorID(id);
-    if (!usuarioExistente) return false; // Retorna falso si el usuario no existe
-
-    // Si se ha proporcionado un nuevo password, lo encripta
+    if (!usuarioExistente) return false; 
     if (nuevosDatos.password) {
         const { salt, hash } = encriptarPassword(nuevosDatos.password);
         nuevosDatos.password = hash;
         nuevosDatos.salt = salt;
     } else {
-        // Si no se proporciona un nuevo password, mantiene el hash y salt actuales
         nuevosDatos.password = usuarioExistente.password;
         nuevosDatos.salt = usuarioExistente.salt;
     }
-
-    // Asigna los nuevos datos al objeto existente
     Object.assign(usuarioExistente, nuevosDatos);
     const usuarioActualizado = new Usuario(usuarioExistente);
-
-    // Valida los datos antes de actualizar en la base de datos
     if (validarDatos(usuarioActualizado.getUsuario)) {
         await usuariosBD.doc(id).set(usuarioActualizado.getUsuario);
         return true;
     }
-    return false; // Retorna falso si los datos no son válidos
+    return false; 
 }
 
 
